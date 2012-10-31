@@ -1,0 +1,86 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+    <style>
+        
+        body{
+            font-size: 10px;
+        }
+        
+        table{
+            width:100%;
+            height:100%;
+        }
+        table td{
+        }
+        #control_container{
+            width:100%;
+            height:400px;
+            overflow:scroll;
+        }
+        #preview_iframe{
+            width:100%;
+            height:400px;
+        }
+        #thecss{
+            width:100%;
+            height:200px;
+        }
+    </style>
+    <body>
+        <table>
+            <tr>
+                <td style='width:30%;height:400px;'>
+                    <div id='control_container'>
+                        
+                    </div>
+                </td>
+                <td style='width:70%;'>
+                    <iframe id='preview_iframe' src='demoitem.html'>
+                    </iframe>
+                </td>
+            </tr>
+            <tr>
+                <td colspan=2>
+                    <textarea id='thecss'>
+                    </textarea>
+                    <button id='update_button'>
+                        Update CSS
+                    </button>
+                    <button id='apply_button'>
+                        Apply new CSS
+                    </button>
+                </td>
+            </tr>
+        </table>
+    </body>
+    <link type="text/css" href="static/css/redmond/jquery-ui-1.8.20.custom.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="static/colorpicker/css/colorpicker.css" type="text/css" />
+    <link rel="stylesheet" href="styler.css" type="text/css" />
+    <script type="text/javascript" src="static/jquery-1.7.1.min.js"></script>
+    <script type="text/javascript" src="static/jquery.tools.min.js"></script>
+    <script type="text/javascript" src="static/colorpicker/js/colorpicker.js"></script>
+    <script type="text/javascript" src="static/jquery-ui-1.8.17.custom.min.js"></script>
+    <script type="text/javascript" src="styler.js"></script>
+    <script>
+        mainbody=$("#control_container");
+        css=$("#thecss").val();
+        applyCallback=function(css){
+            $("#update_button").val(css);
+        }
+        
+        parseCSS(css,$('#preview_iframe'));
+        $("#update_button").click(function(){
+            saveStyle();
+        });
+        
+        $("#apply_button").click(function(){
+            parseCSS($("#thecss").val(),$("#preview_iframe"));
+        });
+        
+        $.get("democss.css",function(text){
+			$("#thecss").val(text);
+			parseCSS($("#thecss").val(),$("#preview_iframe"));
+        });
+        
+    </script>
+</html>

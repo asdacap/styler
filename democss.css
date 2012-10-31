@@ -1,0 +1,46 @@
+/* layout
+{
+    "Tab1":[
+        {
+            "type":"group",
+            "title":"Background group",
+            "defaultprop":{
+                "selector":"body"
+            },
+            "controls":[
+                {
+                    "name":"Background",
+                    "css":"background"
+                },
+                {
+                    "name":"Text",
+                    "css":"text"
+                }
+            ]
+        }
+    ],
+    "Tab2":[
+        {
+            "name":"H1 Text",
+            "css":"text",
+            "selector":"h1"
+        },
+        {
+            "name":"H2 Text",
+            "css":"text",
+            "selector":"h2"
+        },
+        {
+            "name":"Div Text",
+            "css":"text",
+            "selector":"div"
+        },
+        {
+            "name":".class1 Text",
+            "css":"text",
+            "selector":".class1"
+        }
+    ]
+}
+     
+*/

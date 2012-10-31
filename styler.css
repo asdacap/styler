@@ -1,0 +1,53 @@
+input.minmax {
+	width: 8%;
+	max-width:4ex;
+	border: 0;
+	display: inline-block;
+	background: none;
+	margin:0;
+	text-align:right;
+}
+
+input.maxunit {
+	text-align:left;
+}
+
+input.sliderpreval{
+	width:6em;
+}
+
+.cssslider {
+	min-width: 80%;
+	max-width: 95%;
+	display: inline-block;
+	margin:0 1ex;
+}
+
+.styler_control{
+}
+.styler_group{
+	display:inline-block;
+	width:99%;
+	padding: 1ex;
+}
+.styler_group h3{
+	margin:0;
+}
+
+.css_control_group {
+}
+
+#control_pane_container {
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+
+#control_pane_container_container {
+	width: 100%;
+	vertical-align: top;
+}
+
+#control_pane {
+	overflow: hidden;
+	min-height: 265px;
+}
