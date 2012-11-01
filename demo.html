@@ -62,24 +62,25 @@
     <script type="text/javascript" src="static/jquery-ui-1.8.17.custom.min.js"></script>
     <script type="text/javascript" src="styler.js"></script>
     <script>
-        mainbody=$("#control_container");
         css=$("#thecss").val();
-        applyCallback=function(css){
-            $("#update_button").val(css);
-        }
+        stylerobj=Styler({
+           css:css,
+           container:$("#control_container"),
+           iframe:$('#preview_iframe')
+        });
         
-        parseCSS(css,$('#preview_iframe'));
         $("#update_button").click(function(){
-            saveStyle();
+            var newstyle=stylerobj.getNewCss();
+            $("#thecss").val(newstyle);
         });
         
         $("#apply_button").click(function(){
-            parseCSS($("#thecss").val(),$("#preview_iframe"));
+            stylerobj.updateCss($("#thecss").val());
         });
         
         $.get("democss.css",function(text){
 			$("#thecss").val(text);
-			parseCSS($("#thecss").val(),$("#preview_iframe"));
+			stylerobj.updateCss(text);
         });
         
     </script>
