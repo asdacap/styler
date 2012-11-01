@@ -5,13 +5,16 @@
  * 		css:thecss,
  * 		container:thecontainer,
  * 		iframe:previewiframe,
- * 		basecss:thebasecss
+ * 		basecss:thebasecss,
+ * 		predeflayout:"",
+ * 		searchlayout:true
  * })
  * 
  * 'thecss' is the css that you want to edit.
  * 'thecontainer' is a jquery object which styler will use.
  * 'previewiframe' is a jquery object of an iframe which the content will be styled with the css
  * 'thebasecss' is a defaulr css that parse before 'thecss'. Used to predefine style in the control.
+ * 'predeflayout' is the layout of the control. The layout of the control may also be put in the css if 'searchlayout' is true.
  * 
  * to obtained updated css, symply call mystyle.getNewCss()
  * 
@@ -22,7 +25,9 @@ function Styler(args){
 			css:"",
 			iframe:$("<iframe>"),
 			basecss:"",
-			container:$("<div>")
+			container:$("<div>"),
+			predeflayout:{},
+			searchlayout:true
 	}
 	
 	var parsearg=$.extend({},defargs,args);
@@ -38,6 +43,8 @@ function Styler(args){
 	var changelog = {};
 	var inactive = false;
 	var stylerobj={};
+	var predeflayout=parsearg.predeflayout;
+	var searchlayout=parsearg.searchlayout;
 
 	function reset_all() {
 		for ( var selector in thehandlers) {
@@ -366,48 +373,61 @@ function Styler(args){
 		}
 	}
 	
-	function buildlayout(thestringlayout) {
-		try {
-			var layout = JSON.parse(thestringlayout);
-		} catch (e) {
-			console.log("Invalid layout->" + e.toString());
-
-			return $("<h4>Invalid layout->" + e.toString() + "</h4>");
-		}
+	function buildlayout() {
 		var tempdiv = $("<div>");
 		var tabmenu = $("<ul>");
-		for (page in layout) {
-			var newid = "tab-" + page.replace(" ", "_");
-			var thediv = $("<div id='" + newid + "'></div>");
-			tabmenu.append("<li><a href='#" + newid + "'>" + page + "</a></li>");
-			var properties = layout[page];
-			thediv.append(buildgroup(properties));
-			tempdiv.append(thediv);
+		var executed=false;
+		var uid=0;
+		function process_layout(layout){
+			executed=true;
+			for (page in layout) {
+				uid+=1;
+				var newid = "tab-" + page.replace(/\s/g, "_");
+				newid=newid+"uid"+uid.toString();
+				var thediv = $("<div id='" + newid + "'></div>");
+				tabmenu.append("<li><a href='#" + newid + "'>" + page + "</a></li>");
+				var properties = layout[page];
+				thediv.append(buildgroup(properties));
+				tempdiv.append(thediv);
+			}
+		}
+		
+		if(predeflayout){
+			process_layout(predeflayout);
+		}
+		if(searchlayout){
+			var thestringlayout;
+			var layoutfinder = /\/\*\s*layout\s*\n([^*]*)\n\s*\*\//mg;
+			var matches;
+			while(matches = layoutfinder.exec(oldstyle)){
+				var thelayout=matches[1];
+				var layout;
+				try {
+					layout = JSON.parse(thelayout);
+				} catch (e) {
+					console.log("Invalid layout->" + e.toString());
+				}
+				process_layout(layout);
+			}
+		}
+		if(!executed){
+			mainbody.html("<h3>No valid styler layout found.</h3>The css does not contain Styler layout description. Therefore styler is not available.");
 		}
 		tempdiv.prepend(tabmenu);
 		$(tempdiv).tabs();
-		return tempdiv;
+		mainbody.html( tempdiv );
 	}
 
-	var matches;
 	var asyncstuff = function() {
-		if (matches) {
-			var thething = buildlayout(matches[1]);
-			mainbody.html(thething);
-			reset_all();
-			extract_properties();
-		} else {
-			mainbody
-					.html("<h3>No valid styler layout found.</h3>The css does not contain Styler layout description. Therefore styler is not available.");
-		}
+		buildlayout();
+		reset_all();
+		extract_properties();
 		inactive = false;
 	}
 
 	function parseOldStyle() {
 		inactive = true;
 		mainbody.html("<h3>parsing...</h3>Please wait");
-		var layoutfinder = /\/\*\s*layout\s*\n([^*]*)\n\*\//mg;
-		matches = layoutfinder.exec(oldstyle);
 		setTimeout(asyncstuff, 100);
 	}
 

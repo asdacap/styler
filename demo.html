@@ -62,11 +62,34 @@
     <script type="text/javascript" src="static/jquery-ui-1.8.17.custom.min.js"></script>
     <script type="text/javascript" src="styler.js"></script>
     <script>
+    
+        var predeflayout={
+            "Tab1 In JS":{
+                    "type":"emptygroup",
+                    "name":"Background group",
+                    "defaultprop":{
+                        "selector":"body"
+                    },
+                    "controls":[
+                        {
+                            "name":"Background",
+                            "css":"background"
+                        },
+                        {
+                            "name":"Text",
+                            "css":"text"
+                        }
+                    ]
+            }
+        };
+
+        
         css=$("#thecss").val();
         stylerobj=Styler({
            css:css,
            container:$("#control_container"),
-           iframe:$('#preview_iframe')
+           iframe:$('#preview_iframe'),
+           predeflayout:predeflayout
         });
         
         $("#update_button").click(function(){
