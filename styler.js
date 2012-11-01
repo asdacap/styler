@@ -242,46 +242,13 @@ function Styler(args){
 
 	var accordioncounter = 0;
 	function buildcontrol(property, defaultprop) {
-		if (property.type == "group") {
-			var group = $("<div class='styler_group ui-corner-all ui-widget-content'>");
-			var innerdefprop = $.extend({}, defaultprop, property.defaultprop);
-			if (property.title) {
-				group.append("<h3>" + property.title + "</h3>")
+		
+			if(property.type != undefined){
+				if(property.type != "control"){
+					return buildgroup(property,defaultprop);
+				}
 			}
-			var controls = property.controls;
-			for ( var index in controls) {
-				group.append(buildcontrol(controls[index], innerdefprop));
-			}
-			return group;
-		} else if (property.type == "accordion") {
-			accordioncounter = accordioncounter + 1;
-			var counter = accordioncounter;
-			var headerclass = "accordion" + counter.toString();
-			var group = $("<div class='styler_accordian_group'>");
-			var controls = property.controls;
-			var title;
-			if (property.title) {
-				title = property.title;
-			} else {
-				title = "no-title";
-			}
-			var innerdefprop = $.extend({}, defaultprop, property.defaultprop);
-			var header = $("<h3 class='" + headerclass + "'><a href='#'>" + title
-					+ "</a></h3>");
-			var content = $("<div class='cont'></div>");
-			for ( var index in controls) {
-				$(content).append(buildcontrol(controls[index], innerdefprop));
-			}
-			group.append(header);
-			group.append(content);
-			$(group).accordion({
-				active : false,
-				autoHeight : false,
-				header : "h3." + headerclass,
-				collapsible : true
-			});
-			return group;
-		} else {
+		
 			if (!property.name) {
 				property.name = property.css;
 			}
@@ -295,6 +262,17 @@ function Styler(args){
 			var selector = property.selector;
 			var name = property.name;
 			var css = property.css;
+			
+			if(property.container){
+				var tempcont={
+						type:property.container,
+						name:name,
+						controls:[property]
+				};
+				property.container=undefined;
+				return buildgroup(tempcont,defaultprop);
+			}
+			
 			var thecontainer = $("<div class='styler_control'>");
 			var thebuilder;
 			var buildername;
@@ -310,35 +288,84 @@ function Styler(args){
 				thebuilder = defaultbuilder
 			}
 
-			if (styler_meta.nolabel.indexOf(css) == -1) {
-				if (property.container == "accordion") {
-					thecontainer.append("<h3><a href='#'>" + name + "</a></h3>");
-				} else {
-					thecontainer.append("<span>" + name + " : </span>");
-					if (styler_meta.nobr.indexOf(buildername) == -1) {
-						thecontainer.append("<br />");
-					} else {
-					}
-				}
+			if(styler_meta.nolabel.indexOf(css)==-1){
+		    	thecontainer.append("<span>"+name+" : </span>");
+		    	if(styler_meta.nobr.indexOf(buildername)==-1){
+		    		thecontainer.append("<br />");
+		    	}else{
+		    	}
 			}
 			if (thebuilder) {
-				thecontainer.append(thebuilder(stylerobj,selector, css, property.option));
+				thecontainer.append(thebuilder(stylerobj,property));
 			} else {
-				thecontainer.append(buildcontrol(styler_meta.predefcustomcss[property.css],
+				var newproperties=$.extend(true,{},styler_meta.predefcustomcss[property.css]);
+				newproperties.name=property.name;
+				property.name=undefined;
+				thecontainer.append(buildcontrol(newproperties,
 						property));
 			}
-			if (property.container == "accordion") {
-				$(thecontainer).accordion({
-					active : false,
-					autoHeight : false,
-					header : "h3",
-					collapsible : true
-				});
-			}
 			return thecontainer;
+	}
+	
+	function buildgroup(property, defaultprop) {
+		var innerdefprop = $.extend({}, defaultprop, property.defaultprop);
+		var controls = property.controls;
+		var group=$("<div>");
+		
+		if( property.type == undefined ){
+			property.type = "emptygroup";
+		}
+		
+		if (property.type == "group") {
+			console.log("In a group "+property.name);
+			group = $("<div class='styler_group ui-corner-all ui-widget-content'>");
+			if (property.name) {
+				group.append("<h3>" + property.name + "</h3>")
+			}
+			for ( var index in controls) {
+				group.append(buildcontrol(controls[index], innerdefprop));
+			}
+			return group;
+		} else if (property.type == "emptygroup"){
+			console.log("In an emptygroup "+property.name);
+			group = $("<div>");
+			if (property.name) {
+				group.append("<h3>" + property.name + "</h3>")
+			}
+			for ( var index in controls) {
+				group.append(buildcontrol(controls[index], innerdefprop));
+			}
+			return group;
+		} else if (property.type == "accordion") {
+			accordioncounter = accordioncounter + 1;
+			var counter = accordioncounter;
+			var headerclass = "accordion" + counter.toString();
+			var group = $("<div class='styler_group styler_accordian_group'>");
+			var controls = property.controls;
+			var name;
+			if (property.name) {
+				name = property.name;
+			} else {
+				name = "no-title";
+			}
+			var header = $("<h3 class='" + headerclass + "'><a href='#'>" + name
+					+ "</a></h3>");
+			var content = $("<div class='cont'></div>");
+			for ( var index in controls) {
+				$(content).append(buildcontrol(controls[index], innerdefprop));
+			}
+			group.append(header);
+			group.append(content);
+			$(group).accordion({
+				active : false,
+				autoHeight : false,
+				header : "h3." + headerclass,
+				collapsible : true
+			});
+			return group;
 		}
 	}
-
+	
 	function buildlayout(thestringlayout) {
 		try {
 			var layout = JSON.parse(thestringlayout);
@@ -354,9 +381,7 @@ function Styler(args){
 			var thediv = $("<div id='" + newid + "'></div>");
 			tabmenu.append("<li><a href='#" + newid + "'>" + page + "</a></li>");
 			var properties = layout[page];
-			for (property in properties) {
-				thediv.append(buildcontrol(properties[property]));
-			}
+			thediv.append(buildgroup(properties));
 			tempdiv.append(thediv);
 		}
 		tempdiv.prepend(tabmenu);
@@ -687,7 +712,9 @@ styler_meta={};
 function initbuilders() {
 
 	function radiobuilder(theval) {
-		function builder(stylerobj,selector, cssproperty, option) {
+		function builder(stylerobj,option) {
+			var selector=option.selector;
+			var cssproperty=option.css;
 			var values = theval;
 			if (option && option.values) {
 				$.extend(values, option.values);
@@ -739,7 +766,9 @@ function initbuilders() {
 	}
 
 	function foursliderbuilder(defoption) {
-		function thebuilder(stylerobj,selector, css, prefoption) {
+		function thebuilder(stylerobj,prefoption) {
+			var selector=prefoption.selector;
+			var cssproperty=prefoption.css;
 			var option = {
 				min : 0,
 				max : 100,
@@ -903,7 +932,9 @@ function initbuilders() {
 	}
 
 	function selectionbuilder(values) {
-		function builder(stylerobj,selector, cssproperty) {
+		function builder(stylerobj,option) {
+			var selector=option.selector;
+			var cssproperty=option.css;
 			var container = $("<select>");
 			for ( var index in values) {
 				var value = values[index];
@@ -921,7 +952,9 @@ function initbuilders() {
 		return builder;
 	}
 
-	function defaultbuilder(stylerobj,selector, cssproperty) {
+	function defaultbuilder(stylerobj,option) {
+		var selector=option.selector;
+		var cssproperty=option.css;
 		var theinput = $("<input class='default'>");
 		$(theinput).change(function() {
 			stylerobj.modifycss(selector, cssproperty, $(theinput).val());
@@ -932,7 +965,9 @@ function initbuilders() {
 		stylerobj.registercsshandler(selector, cssproperty, handler);
 		return theinput;
 	}
-	function checkbox(stylerobj,selector, cssproperty, options) {
+	function checkbox(stylerobj,option) {
+		var selector=option.selector;
+		var cssproperty=option.css;
 		var checkval = options.checked;
 		var uncheckval = options.unchecked;
 		var theinput = $("<input type='checkbox'>");
@@ -956,7 +991,9 @@ function initbuilders() {
 		return theinput;
 	}
 
-	function boxshadowbuilder(stylerobj,selector, cssprop, options) {
+	function boxshadowbuilder(stylerobj,options) {
+		var selector=option.selector;
+		var cssprop=option.css;
 
 		var container = $("<div class='ui-corner-all ui-widget-content' style='padding:1ex'>");
 		var shadowoverall = $('<input></input>');
@@ -1142,7 +1179,9 @@ function initbuilders() {
 		return container;
 	}
 
-	function colourbuilder(stylerobj,selector, cssprop, options) {
+	function colourbuilder(stylerobj,option) {
+		var selector=option.selector;
+		var cssprop=option.css;
 		var input = $("<input>");
 		input.ColorPicker({
 			onShow : function(colpkr) {
@@ -1180,7 +1219,9 @@ function initbuilders() {
 		return input;
 	}
 
-	function textshadowbuilder(stylerobj,selector, cssprop, option) {
+	function textshadowbuilder(stylerobj,option) {
+		var selector=option.selector;
+		var cssprop=option.css;
 
 		var textshadowcolorinput = $('<input>');
 		var textshadowhoffsetslider = $('<div>');
@@ -1296,7 +1337,10 @@ function initbuilders() {
 		return container;
 	}
 
-	function backgroundrepeatbuilder(stylerobj,selector, cssprop, option) {
+	function backgroundrepeatbuilder(stylerobj,option) {
+		var selector=option.selector;
+		var cssprop=option.css;
+		
 		var container = $("<div>");
 		var backgroundimagerepeatx = $('<input type="checkbox">');
 		var backgroundimagerepeaty = $('<input type="checkbox">');
@@ -1385,7 +1429,10 @@ function initbuilders() {
 		return container;
 	}
 
-	function backgroundurlbuilder(stylerobj,selector, cssproperty) {
+	function backgroundurlbuilder(stylerobj,option) {
+		var selector=option.selector;
+		var cssproperty=option.css;
+			
 		var backgroundimageurlinput = $("<input style='width:100%;'>");
 		var extractor = /url\((.*)\)/;
 		$(backgroundimageurlinput).change(function() {
@@ -1410,7 +1457,10 @@ function initbuilders() {
 		return container;
 	}
 	function sliderbuilder(defoption) {
-		function innerbuilder(stylerobj,selector, cssprop, option) {
+		function innerbuilder(stylerobj,option) {
+			var selector=option.selector;
+			var cssprop=option.css;
+			
 			var predefoption = {
 				cssprop : cssprop,
 				selector : selector,
@@ -1433,7 +1483,11 @@ function initbuilders() {
 		return innerbuilder;
 	}
 
-	function backgroundsizebuilder(stylerobj,selector, cssprop, option) {
+	function backgroundsizebuilder(stylerobj,option) {
+		
+		var selector=option.selector;
+		var cssprop=option.css;
+		
 		var slideroption = {
 			cssprop : cssprop,
 			selector : selector,
@@ -1569,8 +1623,8 @@ function initbuilders() {
 
 	styler_meta.predefcustomcss = {
 		"text" : {
-			type : "accordion",
-			"title" : "text",
+			"type":"emptygroup",
+			"name" : "text",
 			"controls" : [ {
 				"css" : "font-family"
 			}, {
@@ -1588,8 +1642,8 @@ function initbuilders() {
 			} ]
 		},
 		"background" : {
-			type : "accordion",
-			"title" : "background",
+			"type":"emptygroup",
+			"name" : "background",
 			"controls" : [ {
 				"css" : "background-color"
 			}, {
@@ -1605,8 +1659,8 @@ function initbuilders() {
 			} ]
 		},
 		"border" : {
-			type : "accordion",
-			"title" : "border",
+			"type":"emptygroup",
+			"name" : "border",
 			"controls" : [ {
 				"css" : "border-style"
 			}, {

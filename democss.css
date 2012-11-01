@@ -1,9 +1,8 @@
 /* layout
 {
-    "Tab1":[
-        {
-            "type":"group",
-            "title":"Background group",
+    "Tab1":{
+            "type":"emptygroup",
+            "name":"Background group",
             "defaultprop":{
                 "selector":"body"
             },
@@ -17,10 +16,9 @@
                     "css":"text"
                 }
             ]
-        }
-    ],
-    "Tab2":[
-        {
+    },
+    "Tab2":{
+        "controls":[{
             "name":"H1 Text",
             "css":"text",
             "selector":"h1"
@@ -28,6 +26,7 @@
         {
             "name":"H2 Text",
             "css":"text",
+            "container":"accordion",
             "selector":"h2"
         },
         {
@@ -39,8 +38,8 @@
             "name":".class1 Text",
             "css":"text",
             "selector":".class1"
-        }
-    ]
+        }]
+    }
 }
      
 */
