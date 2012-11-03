@@ -1,0 +1,45 @@
+
+<html>
+    <link rel="stylesheet" href="static/colorpicker/colorpicker.css" type="text/css" />
+    <body>
+        <div>
+            <input class='testinput'/>
+            <input style='position:absolute;left:300px;top:300px;' class='testinput'/>
+            <input style='position:absolute;right:0px;bottom:0px;' class='testinput'/>
+        </div>
+    </body>
+    <script type="text/javascript" src="static/jquery-1.7.1.min.js"></script>
+    <script type='text' description='raw html before javascript encode'>
+        <div id='colorchooser'>
+        <canvas class='colorcanvas' width="200" height="230"></canvas>
+        <div class='sidebox'>
+            <img class='backboxtile' src='static/colorpicker/previewalphatile.png'></img>
+            <div class='previewbox'></div>
+            <div class='comparebox'></div>
+            <div class='inputbox'>
+            <span class='label'>Hue:</span><br />
+            <input name='hue'></input><br />
+            <span class='label'>Saturation:</span><br />
+            <input name='saturation'></input><br />
+            <span class='label'>Lightness:</span><br />
+            <input name='lightness'></input><br />
+            <span class='label'>Alpha:</span><br />
+            <input name='alpha'></input><br />
+            </div>
+        </div>
+        </div>
+    </script>
+    <script src='static/colorpicker/colorpicker.js'></script>
+    <script>
+
+        $(".testinput").click(function(){
+           showColorChooser($(this)); 
+           return false;
+        });
+        
+        $(".testinput").change(function(){
+            console.log("Value change "+$(this).val());
+        });
+        
+    </script>
+</html>

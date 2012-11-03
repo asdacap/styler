@@ -1,0 +1,49 @@
+#colorchooser{
+    display:none;
+    position:absolute;
+    background-color:#777;
+    overflow:hidden;
+    width:285px;
+    font-family:Arial;
+    border:1px solid #333;
+    border-radius:2px;
+}
+#colorchooser .sidebox{
+    position:relative;
+    float:right;
+    width:80px;
+}
+#colorchooser .sidebox .previewbox{
+    position:relative;
+    background-color:black;
+    width:70px;
+    height:35px;
+    margin:5px;
+    margin-bottom:0;
+    z-index:10;
+}
+#colorchooser .sidebox .comparebox{
+    position:relative;
+    background-color:blue;
+    width:70px;
+    height:35px;
+    margin:5px;
+    margin-top:0;
+    z-index:10;
+}
+#colorchooser .backboxtile{
+    position:absolute;
+    top:5px;
+    right:5px;
+    z-index:5;
+}
+#colorchooser .label{
+    font-size:70%;
+}
+#colorchooser input{
+    font-size:70%;
+    width:4em;
+}
+#colorchooser .inputbox{
+    padding-left:1em;
+}

@@ -1203,21 +1203,12 @@ function initbuilders() {
 		var selector=option.selector;
 		var cssprop=option.css;
 		var input = $("<input>");
-		input.ColorPicker({
-			onShow : function(colpkr) {
-				$(colpkr).fadeIn(500);
-				return false;
-			},
-			onHide : function(colpkr) {
-				$(colpkr).fadeOut(500);
-				return false;
-			},
-			onChange : function(hsb, hex, rgb) {
-				input.css('backgroundColor', '#' + hex);
-				input.val('#' + hex);
-				stylerobj.modifycss(selector, cssprop, '#' + hex);
-			}
+		
+		input.click(function(){
+			showColorChooser(input);
+			return false;
 		});
+		
 		function handler(csstring) {
 			console.log("color picker change to->" + csstring);
 			input.val(csstring);
@@ -1231,7 +1222,6 @@ function initbuilders() {
 
 		input.change(function() {
 			var csstring = input.val();
-			input.ColorPickerSetColor(csstring);
 			input.css('backgroundColor', csstring);
 			stylerobj.modifycss(selector, cssprop, csstring);
 		});
@@ -1892,5 +1882,6 @@ function initbuilders() {
 var _counter = 0;
 initbuilders();
 // ------------------------end builders definition-----------------------------
+
 
 
