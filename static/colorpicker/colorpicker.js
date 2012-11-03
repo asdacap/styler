@@ -483,8 +483,8 @@ function initColorChooser(){
     
     function hide(){
         maincontainer.slideUp();
-        $("body").unbind("click");
-        maininput.unbind("change");
+        $("body").unbind("click",hide);
+        maininput.unbind("change",mainInputChange);
         maininput=false;
     }
     
@@ -492,7 +492,6 @@ function initColorChooser(){
         
         function initit(){
             var offset=input.offset();
-            console.log(offset);
             var offx=offset.left;
             var offy=offset.top+input.outerHeight()+topmargin;
             
