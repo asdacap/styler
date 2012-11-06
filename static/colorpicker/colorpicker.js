@@ -47,11 +47,12 @@ function roundNumber(num, dec) {
 
 function initColorChooser(){
     
-    var containerdata="\n\x3Cdiv id=\'colorchooser\'\x3E\n\x3Ccanvas class=\'colorcanvas\' width=\"200\" height=\"230\"\x3E\x3C\x2Fcanvas\x3E\n\x3Cdiv class=\'sidebox\'\x3E\n\x3Cimg class=\'backboxtile\' src=\'static\x2Fcolorpicker\x2Fpreviewalphatile.png\'\x3E\x3C\x2Fimg\x3E\n\x3Cdiv class=\'previewbox\'\x3E\x3C\x2Fdiv\x3E\n\x3Cdiv class=\'comparebox\'\x3E\x3C\x2Fdiv\x3E\n\x3Cdiv class=\'inputbox\'\x3E\n\x3Cspan class=\'label\'\x3EHue:\x3C\x2Fspan\x3E\x3Cbr \x2F\x3E\n\x3Cinput name=\'hue\'\x3E\x3C\x2Finput\x3E\x3Cbr \x2F\x3E\n\x3Cspan class=\'label\'\x3ESaturation:\x3C\x2Fspan\x3E\x3Cbr \x2F\x3E\n\x3Cinput name=\'saturation\'\x3E\x3C\x2Finput\x3E\x3Cbr \x2F\x3E\n\x3Cspan class=\'label\'\x3ELightness:\x3C\x2Fspan\x3E\x3Cbr \x2F\x3E\n\x3Cinput name=\'lightness\'\x3E\x3C\x2Finput\x3E\x3Cbr \x2F\x3E\n\x3Cspan class=\'label\'\x3EAlpha:\x3C\x2Fspan\x3E\x3Cbr \x2F\x3E\n\x3Cinput name=\'alpha\'\x3E\x3C\x2Finput\x3E\x3Cbr \x2F\x3E\n\x3C\x2Fdiv\x3E\n\x3C\x2Fdiv\x3E\n\x3C\x2Fdiv\x3E";
-    $("body").append(containerdata);
+	if(!$("#colorchooser").length){
+		var containerdata="\n\x3Cdiv id=\'colorchooser\'\x3E\n\x3Ccanvas class=\'colorcanvas\' width=\"200\" height=\"230\"\x3E\x3C\x2Fcanvas\x3E\n\x3Cdiv class=\'sidebox\'\x3E\n\x3Cimg class=\'backboxtile\' src=\'static\x2Fcolorpicker\x2Fpreviewalphatile.png\'\x3E\x3C\x2Fimg\x3E\n\x3Cdiv class=\'previewbox\'\x3E\x3C\x2Fdiv\x3E\n\x3Cdiv class=\'comparebox\'\x3E\x3C\x2Fdiv\x3E\n\x3Cdiv class=\'inputbox\'\x3E\n\x3Cspan class=\'label\'\x3EHue:\x3C\x2Fspan\x3E\x3Cbr \x2F\x3E\n\x3Cinput name=\'hue\'\x3E\x3C\x2Finput\x3E\x3Cbr \x2F\x3E\n\x3Cspan class=\'label\'\x3ESaturation:\x3C\x2Fspan\x3E\x3Cbr \x2F\x3E\n\x3Cinput name=\'saturation\'\x3E\x3C\x2Finput\x3E\x3Cbr \x2F\x3E\n\x3Cspan class=\'label\'\x3ELightness:\x3C\x2Fspan\x3E\x3Cbr \x2F\x3E\n\x3Cinput name=\'lightness\'\x3E\x3C\x2Finput\x3E\x3Cbr \x2F\x3E\n\x3Cspan class=\'label\'\x3EAlpha:\x3C\x2Fspan\x3E\x3Cbr \x2F\x3E\n\x3Cinput name=\'alpha\'\x3E\x3C\x2Finput\x3E\x3Cbr \x2F\x3E\n\x3C\x2Fdiv\x3E\n\x3C\x2Fdiv\x3E\n\x3C\x2Fdiv\x3E";
+		$("body").append(containerdata);
+	}
+	
     var maincontainer=$("#colorchooser");
-    
-    
     var maincanvas=maincontainer.find(".colorcanvas");
     var previewbox=maincontainer.find('.previewbox');
     var comparebox=maincontainer.find('.comparebox');
@@ -75,6 +76,9 @@ function initColorChooser(){
     var opacity=1;
     
     var inputchanging=false;
+    
+    var inputid;
+    var stylerobj;
     
     //0-#FFFFFF 1-#FFF 2-rgb(255,255,255) 3-rgba(255,255,255,1) 4-hsl(0,100%,100%) 5-hsla(0,100%,100%,1)
     var mode=0;
@@ -482,15 +486,76 @@ function initColorChooser(){
     });
     
     function hide(){
-        maincontainer.slideUp();
+        maincontainer.slideUp(removePalette());
         $("body").unbind("click",hide);
         maininput.unbind("change",mainInputChange);
         maininput=false;
+        inputid=undefined;
+        stylerobj=undefined;
     }
     
-    showColorChooser=function(input){
+    var paletteboxshown=false;
+    function showPalettebox(){
+    	paletteboxshown=true;
+    	maincontainer.find(".innercontainer").animate({left:-200},500);
+    }
+    
+    function hidePalettebox(){
+    	paletteboxshown=false;
+    	maincontainer.find(".innercontainer").animate({left:0},500);
+    }
+    
+    maincontainer.find(".paletteicon").click(function(){
+    	if(paletteboxshown){
+    		hidePalettebox();
+    	}else{
+    		showPalettebox();
+    	}
+    });
+    
+    function removePalette(){
+    	maincontainer.width(285);
+    	maincontainer.find(".palettelist").empty();
+    	hidePalettebox();
+    }
+    
+    function fetchPalette(){
+    	maincontainer.width(310);
+    	var palettecolors=stylerobj.getPalette();
+    	var currentcolor=stylerobj.getCurrentColorName(inputid);
+    	var palettename;
+    	for(palettename in palettecolors){
+    		var palettecontainer=$("<div class='paletteitem'>");
+    		var previewbox=$("<div class='paletteitembox'>");
+    		if(palettename==currentcolor){
+    			palettecontainer.toggleClass("selected");
+    		}
+    		previewbox.css("background-color",palettecolors[palettename]);
+    		palettecontainer.append(previewbox);
+    		palettecontainer.append("<span class='colorname'>"+palettename+"<span>");
+    		palettecontainer.append("<br />");
+    		palettecontainer.click(function(){
+    			var thecolorname=$(this).find(".colorname").text();
+    			stylerobj.setInputColor(inputid,thecolorname);
+    			var thepallete=stylerobj.getPalette();
+    			parseValue(thepallete[thecolorname]);
+    			maincontainer.find(".palettelist .selected").toggleClass("selected");
+    			$(this).toggleClass("selected");
+    		});
+    		maincontainer.find(".palettelist").append(palettecontainer);
+    	}
+    }
+    
+    showColorChooser=function(input,inputidp,stylerobjp){
         
         function initit(){
+        	
+        	if(inputidp!=undefined){
+        		inputid=inputidp;
+        		stylerobj=stylerobjp;
+        		fetchPalette();
+        	}
+        	
             var offset=input.offset();
             var offx=offset.left;
             var offy=offset.top+input.outerHeight()+topmargin;

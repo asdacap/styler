@@ -4,15 +4,18 @@
     background-color:#777;
     overflow:hidden;
     width:285px;
+    height:230px;
     font-family:Arial;
     border:1px solid #333;
     border-radius:2px;
     z-index:3;
 }
 #colorchooser .sidebox{
-    position:relative;
-    float:right;
+    position:absolute;
+    left:200px;
+    top:0;
     width:80px;
+    margin-right:2px;
 }
 #colorchooser .sidebox .previewbox{
     position:relative;
@@ -45,4 +48,50 @@
 }
 #colorchooser .inputbox{
     padding-left:1em;
+}
+#colorchooser .palettebox{
+    position:absolute;
+    top:0;
+    left:281px;
+    margin-top:5px;
+    padding-left:4px;
+    border-left:1px solid black;
+    height:220px;
+    width:300px;
+}
+#colorchooser .palettebox span{
+    vertical-align:super;
+}
+#colorchooser .palettebox .paletteitem:hover span{
+    vertical-align:super;
+    text-decoration:underline;
+}
+#colorchooser .paletteicon{
+    height:20px;
+    width:20px;
+    cursor:pointer;
+}
+#colorchooser .paletteicon:hover{
+    outline:1px solid white;
+}
+#colorchooser .paletteitembox{
+    height:20px;
+    width:20px;
+    display:inline-block;
+    margin-right:4px;
+    cursor:pointer;
+}
+#colorchooser .paletteitem:hover .paletteitembox{
+    outline:1px solid white;
+}
+#colorchooser .paletteitem.selected .paletteitembox{
+    outline:1px solid white;
+}
+#colorchooser .paletteitem{
+    cursor:pointer;
+}
+#colorchooser .innercontainer{
+    position:absolute;
+    left:0;
+    top:0;
 }

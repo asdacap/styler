@@ -37,18 +37,23 @@ input.sliderpreval{
 .css_control_group {
 }
 
-#control_pane_container {
-	overflow-y: auto;
-	overflow-x: hidden;
+.palettetab .colorbox{
+    display:inline-block;
+    width:20px;
+    height:20px;
+    outline:1px solid grey;
 }
 
-#control_pane_container_container {
-	width: 100%;
-	vertical-align: top;
+.palettetab input{
+    width:4em;
+    margin-right:1ex;
 }
-
-#control_pane {
-	overflow: hidden;
-	min-height: 265px;
+.palettetab .palettethemeitem .name{
+    vertical-align:super;
+    margin:2px;
+    margin-left:5px;
 }
-
+.palettetab .palettethemeitem:hover{
+    text-decoration:underline;
+    cursor:pointer;
+}

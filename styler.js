@@ -27,7 +27,39 @@ function Styler(args){
 			basecss:"",
 			container:$("<div>"),
 			predeflayout:{},
-			searchlayout:true
+			searchlayout:true,
+			palettegallery:[
+				{
+					name:"default",
+					colors:{
+						foreground:"#000",
+						foreground2:"#011969",
+						background:"#ADE7FF",
+						background2:"#B1D1DE",
+						border:"#0C506B",
+						highlight:"#FF110D"
+					}
+				},
+				{
+					name:"purple",
+					colors:{
+						foreground:"#000",
+						foreground2:"#870047",
+						background:"#E768AB",
+						background2:"#E73A95",
+						border:"#9c2765",
+						highlight:"#98ed00"
+					}
+				}
+			                ],
+			palette:{
+				foreground:"#000",
+				foreground2:"#011969",
+				background:"#ADE7FF",
+				background2:"#B1D1DE",
+				border:"#0C506B",
+				highlight:"#FF110D"
+			}
 	}
 	
 	var parsearg=$.extend({},defargs,args);
@@ -411,8 +443,16 @@ function Styler(args){
 			}
 		}
 		if(!executed){
-			mainbody.html("<h3>No valid styler layout found.</h3>The css does not contain Styler layout description. Therefore styler is not available.");
+			tabmenu.append("<li><a href='#taberror'>Error</a></li>");
+			tempdiv.append("<div id='taberror'><h3>No valid styler layout found.</h3>The css does not contain Styler layout description. Therefore styler is not available.</div>");
 		}
+		
+		//-------------------color--------------------------------
+		tabmenu.append("<li><a href='#stylercolortab'>Color</a></li>");
+		colortab=$("<div id='stylercolortab'>");
+		colortab.append(palettediv);
+		tempdiv.append(colortab);
+		
 		tempdiv.prepend(tabmenu);
 		$(tempdiv).tabs();
 		mainbody.html( tempdiv );
@@ -422,7 +462,9 @@ function Styler(args){
 		buildlayout();
 		reset_all();
 		extract_properties();
+		initializeColorPalette();
 		inactive = false;
+		extractColorPalette();
 	}
 
 	function parseOldStyle() {
@@ -432,7 +474,9 @@ function Styler(args){
 	}
 
 	function savestyle() {
-		oldstyle = getnewcss();
+		var newstyle=getnewcss();
+		newstyle=putColorPaletteData(newstyle);
+		oldstyle = newstyle;
 		reverse_css();
 		return oldstyle;
 	}
@@ -448,6 +492,163 @@ function Styler(args){
 	stylerobj.updateCss=updateCss;
 	
 	updateCss(oldstyle);
+	
+	//-----------color palette system-----------------
+	
+	//A dictionary of input id and {input:input,color:color}
+	var colorinputs={};
+	
+	//A dictionary of colorname and value
+	var palette=parsearg.palette;
+	
+	var palettegallery=parsearg.palettegallery;
+	var palettediv=$("<div class='palettetab'>");
+	
+	function initializeColorPalette(){
+		palettediv.empty();
+		var moddiv=$("<div>");
+		moddiv.append("<h3>Modify Color Palette</h3>")
+		for(colorname in palette){
+			var citem=$("<div class='palettecoloritem'></div>");
+			var input=$("<input>");
+			input.css("background-color",palette[colorname]);
+			input.val(palette[colorname]);
+			input.attr("colorname",colorname);
+			input.change(function(){
+				var cname=$(this).attr("colorname");
+				changePaletteColor(cname,$(this).val());
+			});
+			input.click(function(){
+				showColorChooser($(this));
+				return false;
+			});
+			var label=$("<span>"+colorname+"</span>");
+			citem.append(input);
+			citem.append(label);
+			moddiv.append(citem);
+		}
+		palettediv.append(moddiv);
+		if(palettegallery.length!=0){
+			var galdiv=$("<div>");
+			galdiv.append("<h3>Select predefined Color Palette</h3>");
+			for(index in palettegallery){
+				var itemdiv=$("<div themename='"+palettegallery[index].name+"' class='palettethemeitem'>");
+				for(colorname in palettegallery[index].colors){
+					itemdiv.append("<div class='colorbox' style='background-color:"+palettegallery[index].colors[colorname]+"'></div>");
+				}
+				itemdiv.append("<span class='name'>"+palettegallery[index].name+"</span>");
+				itemdiv.click(function(){
+					changePaletteTheme($(this).attr("themename"));
+				});
+				galdiv.append(itemdiv);
+			}
+		}
+		palettediv.append(galdiv);
+		
+	}
+	
+	function extractColorPalette(){
+		var extractor=/\/\*\s*Color Palette\s*\n([^*]*)\n\s*\*\//mg;
+		var match=extractor.exec(oldstyle);
+		if(match){
+			console.log("Palette data detected");
+			var palettedata=match[1];
+			try {
+				palettedata= JSON.parse(palettedata);
+			} catch (e) {
+				console.log("Invalid palette data->" + e.toString());
+				return;
+			}
+			palette=palettedata.colors;
+			var colorinputscss=palettedata.inputs;
+			for(inputid in colorinputscss){
+				var colorname=colorinputscss[inputid];
+				for(inputid2 in colorinputs){
+					if(inputid==inputid2){
+						colorinputs[inputid2].color=colorname;
+					}
+				}
+			}
+			for(colorname in palette){
+				changePaletteColor(colorname,palette[colorname]);
+			}
+		}
+	}
+	
+	function putColorPaletteData(thecss){
+		var palettedata={
+				colors:palette,
+		};
+		var inputdata={};
+		for(inputid in colorinputs){
+			inputdata[inputid]=colorinputs[inputid].color;
+		}
+		palettedata.inputs=inputdata;
+		
+		var css=thecss;
+		console.log(palettedata);
+		palettedata=JSON.stringify(palettedata);
+		palettedata="/* Color Palette \n"+palettedata+"\n*/";
+		
+		var extractor=/\/\*\s*Color Palette\s*\n([^*]*)\n\s*\*\//mg;
+		var match=extractor.exec(thecss);
+		if(match){
+			css.replace(extractor,palettedata);
+		}else{
+			css=css+"\n"+palettedata;
+		}
+		return css;
+	}
+	
+	function changePaletteTheme(themename){
+		var theme;
+		for(index in palettegallery){
+			if(palettegallery[index].name==themename){
+				theme=palettegallery[index].colors;
+			}
+		}
+		for(colorname in theme){
+			changePaletteColor(colorname,theme[colorname]);
+		}
+	}
+	
+	function changePaletteColor(colorname,value){
+		palette[colorname]=value;
+		palettediv.find("input[colorname="+colorname+"]").val(value);
+		palettediv.find("input[colorname="+colorname+"]").css("background-color",value);
+		for(var inputid in colorinputs){
+			if(colorinputs[inputid].color==colorname){
+				colorinputs[inputid].input.val(value);
+				colorinputs[inputid].input.change();
+			}
+		}
+	}
+	
+	stylerobj.registerColorInput=function(uid,input){
+		colorinputs[uid]={input:input,color:""};
+	}
+	
+	stylerobj.setInputColor=function(inputid,color){
+		if(colorinputs[inputid]==undefined){
+			console.log("WARNING color input not registered ->"+inputid)
+			return "";
+		}
+		colorinputs[inputid].color=color;
+		$(colorinputs[inputid].input).val(palette[color]);
+		$(colorinputs[inputid].input).css("background-color",palette[color]);
+	}
+	
+	stylerobj.getCurrentColorName=function(inputid){
+		if(colorinputs[inputid]==undefined){
+			console.log("WARNING color input not registered ->"+inputid)
+			return "";
+		}
+		return colorinputs[inputid].color;
+	}
+	
+	stylerobj.getPalette=function(){
+		return palette;
+	}
 	
 	return stylerobj;
 }
@@ -1198,23 +1399,24 @@ function initbuilders() {
 
 		return container;
 	}
-
+	var colorid=0;
 	function colourbuilder(stylerobj,option) {
+		
+		colorid+=1;
+		var mcolorid=colorid;
 		var selector=option.selector;
 		var cssprop=option.css;
 		var input = $("<input>");
-		
+		var inputid=cssprop+selector+mcolorid;
+		stylerobj.registerColorInput(inputid,input);
 		input.click(function(){
-			showColorChooser(input);
+			showColorChooser(input,inputid,stylerobj);
 			return false;
 		});
 		
 		function handler(csstring) {
 			console.log("color picker change to->" + csstring);
 			input.val(csstring);
-			if (csstring != "transparent") {
-				input.ColorPickerSetColor(csstring);
-			}
 			$(input).css("background-color", csstring);
 		}
 
