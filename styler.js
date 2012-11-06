@@ -1297,7 +1297,7 @@ function initbuilders() {
 
 			var shadowcolor = split[curindex];
 			shadowcolorinput.val(shadowcolor);
-			shadowcolorinput.ColorPickerSetColor(shadowcolor);
+			shadowcolorinput.css("background-color",shadowcolor);
 
 		}
 
@@ -1397,20 +1397,10 @@ function initbuilders() {
 			}
 		});
 
-		shadowcolorinput.ColorPicker({
-			onShow : function(colpkr) {
-				$(colpkr).fadeIn(500);
-				return false;
-			},
-			onHide : function(colpkr) {
-				$(colpkr).fadeOut(500);
-				return false;
-			},
-			onChange : function(hsb, hex, rgb) {
-				shadowcolorinput.css('backgroundColor', '#' + hex);
-				shadowcolorinput.val('#' + hex);
-				shadow_color_change('#' + hex);
-			}
+		var shadowinputid=selector+cssprop;
+		shadowcolorinput.click(function(){
+			showColorChooser(shadowcolorinput,shadowinputid,stylerobj);
+			return false;
 		});
 
 		shadowcolorinput.change(function() {
@@ -1420,15 +1410,12 @@ function initbuilders() {
 
 		return container;
 	}
-	var colorid=0;
 	function colourbuilder(stylerobj,option) {
 		
-		colorid+=1;
-		var mcolorid=colorid;
 		var selector=option.selector;
 		var cssprop=option.css;
 		var input = $("<input>");
-		var inputid=cssprop+selector+mcolorid;
+		var inputid=selector+cssprop;
 		stylerobj.registerColorInput(inputid,input);
 		input.click(function(){
 			showColorChooser(input,inputid,stylerobj);
@@ -1501,7 +1488,7 @@ function initbuilders() {
 
 			var shadowcolor = split[curindex];
 			textshadowcolorinput.val(shadowcolor);
-			textshadowcolorinput.ColorPickerSetColor(shadowcolor);
+			textshadowcolorinput.css("background-color",shadowcolor);
 
 		}
 
@@ -1543,21 +1530,10 @@ function initbuilders() {
 			}
 		});
 
-		textshadowcolorinput.ColorPicker({
-			onShow : function(colpkr) {
-				$(colpkr).fadeIn(500);
-				return false;
-			},
-			onHide : function(colpkr) {
-				$(colpkr).fadeOut(500);
-				return false;
-			},
-			onChange : function(hsb, hex, rgb) {
-				textshadowcolorinput.css('backgroundColor', '#' + hex);
-				textshadowcolorinput.val('#' + hex);
-				text_shadow_color = ('#' + hex);
-				reset_text_shadow();
-			}
+		var textshadowinputid=selector+cssprop;
+		textshadowcolorinput.click(function(){
+			showColorChooser(textshadowcolorinput,textshadowinputid,stylerobj);
+			return false;
 		});
 
 		textshadowcolorinput.change(function() {
