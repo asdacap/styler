@@ -7,7 +7,10 @@
  * 		iframe:previewiframe,
  * 		basecss:thebasecss,
  * 		predeflayout:"",
- * 		searchlayout:true
+ * 		searchlayout:true,
+ * 		palettegallery:thepalettegallery,
+ * 		palette:thepalette,
+ * 		preparse:true
  * })
  * 
  * 'thecss' is the css that you want to edit.
@@ -15,7 +18,9 @@
  * 'previewiframe' is a jquery object of an iframe which the content will be styled with the css
  * 'thebasecss' is a defaulr css that parse before 'thecss'. Used to predefine style in the control.
  * 'predeflayout' is the layout of the control. The layout of the control may also be put in the css if 'searchlayout' is true.
- * 
+ * 'thepalettegallery' is a list of color palette use in color palette tab.
+ * 'palette' is the initial palette
+ * 'preparse' if true will call updateCSS. Beware that updateCss has some asyncronous stuff running. Careful not tu run updateCss if preparse is true.
  * to obtained updated css, symply call mystyle.getNewCss()
  * 
  */
@@ -59,7 +64,8 @@ function Styler(args){
 				background2:"#B1D1DE",
 				border:"#0C506B",
 				highlight:"#FF110D"
-			}
+			},
+			preparse:true
 	}
 	
 	var parsearg=$.extend({},defargs,args);
@@ -77,19 +83,7 @@ function Styler(args){
 	var stylerobj={};
 	var predeflayout=parsearg.predeflayout;
 	var searchlayout=parsearg.searchlayout;
-
-	function reset_all() {
-		for ( var selector in thehandlers) {
-			for ( var css in thehandlers[selector]) {
-				for ( var defcss in styler_meta.defaultvalues) {
-					if (css == defcss) {
-						thehandlers[selector][css](styler_meta.defaultvalues[defcss]);
-					}
-				}
-			}
-		}
-	}
-
+	
 	function modifycss(selector, css, csstring, noview) {
 		if (inactive && !noview) {
 			return;
@@ -458,6 +452,30 @@ function Styler(args){
 		mainbody.html( tempdiv );
 	}
 
+	function reset_all() {
+		for ( var selector in thehandlers) {
+			for ( var css in thehandlers[selector]) {
+				for ( var defcss in styler_meta.defaultvalues) {
+					if (css == defcss) {
+						thehandlers[selector][css](styler_meta.defaultvalues[defcss]);
+					}
+				}
+			}
+		}
+	}
+	
+	function reset_state(){
+		oldstyle="";
+		selectorDict=[];
+		thehandlers={};
+		changelog={};
+		colorinputs={};
+		palette=$.extend(true,{},parsearg.palette);
+		palettegallery=parsearg.palettegallery;
+		mainbody.empty();
+		mainbody.append()
+	}
+
 	var asyncstuff = function() {
 		buildlayout();
 		reset_all();
@@ -467,31 +485,27 @@ function Styler(args){
 		extractColorPalette();
 	}
 
-	function parseOldStyle() {
-		inactive = true;
-		mainbody.html("<h3>parsing...</h3>Please wait");
-		setTimeout(asyncstuff, 100);
-	}
-
-	function savestyle() {
+	function savestyle(revert) {
 		var newstyle=getnewcss();
 		newstyle=putColorPaletteData(newstyle);
 		oldstyle = newstyle;
-		reverse_css();
+		if(revert){
+			reverse_css();
+		}
 		return oldstyle;
 	}
 	
 	function updateCss(css){
-		mainbody.empty();
-		mainbody.append()
+		reset_state();
 		oldstyle = css;
-		parseOldStyle();
+		inactive = true;
+		mainbody.html("<h3>parsing...</h3>Please wait");
+		setTimeout(asyncstuff, 100);
 	}
 	
 	stylerobj.getNewCss=savestyle;
 	stylerobj.updateCss=updateCss;
 	
-	updateCss(oldstyle);
 	
 	//-----------color palette system-----------------
 	
@@ -499,7 +513,7 @@ function Styler(args){
 	var colorinputs={};
 	
 	//A dictionary of colorname and value
-	var palette=parsearg.palette;
+	var palette=$.extend(true,{},parsearg.palette);
 	
 	var palettegallery=parsearg.palettegallery;
 	var palettediv=$("<div class='palettetab'>");
@@ -624,11 +638,11 @@ function Styler(args){
 		}
 	}
 	
-	stylerobj.registerColorInput=function(uid,input){
+	function registerColorInput(uid,input){
 		colorinputs[uid]={input:input,color:""};
 	}
 	
-	stylerobj.setInputColor=function(inputid,color){
+	function setInputColor(inputid,color){
 		if(colorinputs[inputid]==undefined){
 			console.log("WARNING color input not registered ->"+inputid)
 			return "";
@@ -638,7 +652,7 @@ function Styler(args){
 		$(colorinputs[inputid].input).css("background-color",palette[color]);
 	}
 	
-	stylerobj.getCurrentColorName=function(inputid){
+	function getCurrentColorName(inputid){
 		if(colorinputs[inputid]==undefined){
 			console.log("WARNING color input not registered ->"+inputid)
 			return "";
@@ -646,15 +660,22 @@ function Styler(args){
 		return colorinputs[inputid].color;
 	}
 	
-	stylerobj.getPalette=function(){
+	function getPalette(){
 		return palette;
 	}
 	
+	stylerobj.getCurrentColorName=getCurrentColorName
+	stylerobj.setInputColor=setInputColor;
+	stylerobj.registerColorInput=registerColorInput;
+	stylerobj.getPalette=getPalette;
+	
+	if(parsearg.preparse){
+		updateCss(oldstyle);
+	}
 	return stylerobj;
 }
 
-$
-		.widget(
+$.widget(
 				'styler.StylerSlider',
 				{
 					options : {

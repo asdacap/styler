@@ -1,23 +1,6 @@
 /* layout
 {
-    "Tab1":{
-            "type":"emptygroup",
-            "name":"Background group",
-            "defaultprop":{
-                "selector":"body"
-            },
-            "controls":[
-                {
-                    "name":"Background",
-                    "css":"background"
-                },
-                {
-                    "name":"Text",
-                    "css":"text"
-                }
-            ]
-    },
-    "Tab2":{
+    "Tab In CSS":{
         "controls":[{
             "name":"H1 Text",
             "css":"text",
