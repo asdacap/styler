@@ -499,7 +499,7 @@ function Styler(args){
 		reset_state();
 		oldstyle = css;
 		inactive = true;
-		mainbody.html("<h3>parsing...</h3>Please wait");
+		mainbody.html("<div class='mainloading'><br /><br /><br /><br /><h3>Parsing</h3>Please wait...</div>");
 		setTimeout(asyncstuff, 100);
 	}
 	
