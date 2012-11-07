@@ -356,7 +356,11 @@ function Styler(args){
 				group.append("<h3>" + property.name + "</h3>")
 			}
 			for ( var index in controls) {
-				group.append(buildcontrol(controls[index], innerdefprop));
+				try{
+					group.append(buildcontrol(controls[index], innerdefprop));
+				}catch(e){
+					console.log("Error building control->"+e.toString());
+				}
 			}
 			return group;
 		} else if (property.type == "emptygroup"){
@@ -366,7 +370,11 @@ function Styler(args){
 				group.append("<h3>" + property.name + "</h3>")
 			}
 			for ( var index in controls) {
-				group.append(buildcontrol(controls[index], innerdefprop));
+				try{
+					group.append(buildcontrol(controls[index], innerdefprop));
+				}catch(e){
+					console.log("Error building control->"+e.toString());
+				}
 			}
 			return group;
 		} else if (property.type == "accordion") {
@@ -385,7 +393,11 @@ function Styler(args){
 					+ "</a></h3>");
 			var content = $("<div class='cont'></div>");
 			for ( var index in controls) {
-				$(content).append(buildcontrol(controls[index], innerdefprop));
+				try{
+					$(content).append(buildcontrol(controls[index], innerdefprop));
+				}catch(e){
+					console.log("Error building control->"+e.toString());
+				}
 			}
 			group.append(header);
 			group.append(content);
