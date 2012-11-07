@@ -37,6 +37,12 @@ input.sliderpreval{
 .css_control_group {
 }
 
+input.colorinput{
+    width:8em;
+    border:1px solid grey;
+    padding:1ex;
+}
+
 .palettetab .colorbox{
     display:inline-block;
     width:20px;
@@ -45,9 +51,9 @@ input.sliderpreval{
 }
 
 .palettetab input{
-    width:4em;
     margin-right:1ex;
 }
+
 .palettetab .palettethemeitem .name{
     vertical-align:super;
     margin:2px;
@@ -64,4 +70,9 @@ div.mainloading{
     height:100%;
     font-family:Arial;
     font-size:200%;
+}
+
+.stylercolortab{
+    background-image:url("/static/colorpicker/colortabback.png");
+    background-size:100% 100%;
 }

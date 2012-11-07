@@ -454,7 +454,7 @@ function Styler(args){
 		}
 		
 		//-------------------color--------------------------------
-		tabmenu.append("<li><a href='#stylercolortab'>Color</a></li>");
+		tabmenu.append("<li><a href='#stylercolortab' class='stylercolortab'>Color</a></li>");
 		colortab=$("<div id='stylercolortab'>");
 		colortab.append(palettediv);
 		tempdiv.append(colortab);
@@ -536,7 +536,7 @@ function Styler(args){
 		moddiv.append("<h3>Modify Color Palette</h3>")
 		for(colorname in palette){
 			var citem=$("<div class='palettecoloritem'></div>");
-			var input=$("<input>");
+			var input=$("<input class='colorinput'>");
 			input.css("background-color",palette[colorname]);
 			input.val(palette[colorname]);
 			input.attr("colorname",colorname);
@@ -1251,7 +1251,7 @@ function initbuilders() {
 
 		var container = $("<div class='ui-corner-all ui-widget-content' style='padding:1ex'>");
 		var shadowoverall = $('<input></input>');
-		var shadowcolorinput = $('<input></input>');
+		var shadowcolorinput = $('<input class="colorinput"></input>');
 		var shadowhorizontaloffsetslider = $('<div>');
 		var shadowverticaloffsetslider = $('<div>');
 		var shadowblurdistanceslider = $('<div>');
@@ -1426,7 +1426,7 @@ function initbuilders() {
 		
 		var selector=option.selector;
 		var cssprop=option.css;
-		var input = $("<input>");
+		var input = $("<input class='colorinput'>");
 		var inputid=selector+cssprop;
 		stylerobj.registerColorInput(inputid,input);
 		input.click(function(){
@@ -1455,7 +1455,7 @@ function initbuilders() {
 		var selector=option.selector;
 		var cssprop=option.css;
 
-		var textshadowcolorinput = $('<input>');
+		var textshadowcolorinput = $('<input class="colorinput">');
 		var textshadowhoffsetslider = $('<div>');
 		var textshadowvoffsetslider = $('<div>');
 		var textshadowblurslider = $('<div>');
