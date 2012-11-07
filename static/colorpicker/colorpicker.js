@@ -45,10 +45,14 @@ function roundNumber(num, dec) {
     return result;
 }
 
+if(window.staticpath==undefined){
+	window.staticpath="/static/colorpicker/";
+}
+
 function initColorChooser(){
     
 	if(!$("#colorchooser").length){
-		var containerdata="\n\x3Cdiv id=\'colorchooser\'\x3E\n\x3Ccanvas class=\'colorcanvas\' width=\"200\" height=\"230\"\x3E\x3C\x2Fcanvas\x3E\n\x3Cdiv class=\'sidebox\'\x3E\n\x3Cimg class=\'backboxtile\' src=\'static\x2Fcolorpicker\x2Fpreviewalphatile.png\'\x3E\x3C\x2Fimg\x3E\n\x3Cdiv class=\'previewbox\'\x3E\x3C\x2Fdiv\x3E\n\x3Cdiv class=\'comparebox\'\x3E\x3C\x2Fdiv\x3E\n\x3Cdiv class=\'inputbox\'\x3E\n\x3Cspan class=\'label\'\x3EHue:\x3C\x2Fspan\x3E\x3Cbr \x2F\x3E\n\x3Cinput name=\'hue\'\x3E\x3C\x2Finput\x3E\x3Cbr \x2F\x3E\n\x3Cspan class=\'label\'\x3ESaturation:\x3C\x2Fspan\x3E\x3Cbr \x2F\x3E\n\x3Cinput name=\'saturation\'\x3E\x3C\x2Finput\x3E\x3Cbr \x2F\x3E\n\x3Cspan class=\'label\'\x3ELightness:\x3C\x2Fspan\x3E\x3Cbr \x2F\x3E\n\x3Cinput name=\'lightness\'\x3E\x3C\x2Finput\x3E\x3Cbr \x2F\x3E\n\x3Cspan class=\'label\'\x3EAlpha:\x3C\x2Fspan\x3E\x3Cbr \x2F\x3E\n\x3Cinput name=\'alpha\'\x3E\x3C\x2Finput\x3E\x3Cbr \x2F\x3E\n\x3C\x2Fdiv\x3E\n\x3C\x2Fdiv\x3E\n\x3C\x2Fdiv\x3E";
+		var containerdata="\x3Cdiv id=\'colorchooser\'\x3E\n        \x3Cdiv class=\'innercontainer\'\x3E\n        \x3Ccanvas class=\'colorcanvas\' width=\"200\" height=\"230\"\x3E\x3C\x2Fcanvas\x3E\n        \x3Cdiv class=\'sidebox\'\x3E\n            \x3Cdiv class=\'backboxtile\'\x3E\x3C\x2Fdiv\x3E\n            \x3Cdiv class=\'previewbox\'\x3E\x3C\x2Fdiv\x3E\n            \x3Cdiv class=\'comparebox\'\x3E\x3C\x2Fdiv\x3E\n            \x3Cdiv class=\'inputbox\'\x3E\n            \x3Cspan class=\'label\'\x3EHue:\x3C\x2Fspan\x3E\x3Cbr \x2F\x3E\n            \x3Cinput name=\'hue\'\x3E\x3C\x2Finput\x3E\x3Cbr \x2F\x3E\n            \x3Cspan class=\'label\'\x3ESaturation:\x3C\x2Fspan\x3E\x3Cbr \x2F\x3E\n            \x3Cinput name=\'saturation\'\x3E\x3C\x2Finput\x3E\x3Cbr \x2F\x3E\n            \x3Cspan class=\'label\'\x3ELightness:\x3C\x2Fspan\x3E\x3Cbr \x2F\x3E\n            \x3Cinput name=\'lightness\'\x3E\x3C\x2Finput\x3E\x3Cbr \x2F\x3E\n            \x3Cspan class=\'label\'\x3EAlpha:\x3C\x2Fspan\x3E\x3Cbr \x2F\x3E\n            \x3Cinput name=\'alpha\'\x3E\x3C\x2Finput\x3E\x3Cbr \x2F\x3E\n            \x3C\x2Fdiv\x3E\n        \x3C\x2Fdiv\x3E\n        \x3Cdiv class=\'palettebox\'\x3E\n            \x3Cdiv class=\'paletteicon\'\x3E\x3C\x2Fdiv\x3E\n            \x3Cdiv class=\'palettelist\'\x3E\n                \n            \x3C\x2Fdiv\x3E\n        \x3C\x2Fdiv\x3E\n        \x3C\x2Fdiv\x3E\n        \x3C\x2Fdiv\x3E";
 		$("body").append(containerdata);
 	}
 	
@@ -57,11 +61,11 @@ function initColorChooser(){
     var previewbox=maincontainer.find('.previewbox');
     var comparebox=maincontainer.find('.comparebox');
     var huecircle=new Image();
-    huecircle.src='static/colorpicker/huecircle.png';
+    huecircle.src=staticpath+'huecircle.png';
     var backtile=new Image();
-    backtile.src='static/colorpicker/backtile.png';
+    backtile.src=staticpath+'backtile.png';
     var alphatile=new Image();
-    alphatile.src='static/colorpicker/alphatile.png';
+    alphatile.src=staticpath+'alphatile.png';
     
     var huebuffer=document.createElement("canvas");
     huebuffer.width=100;

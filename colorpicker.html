@@ -11,9 +11,10 @@
     <script type="text/javascript" src="static/jquery-1.7.1.min.js"></script>
     <script type='text' description='raw html before javascript encode'>
         <div id='colorchooser'>
+        <div class='innercontainer'>
         <canvas class='colorcanvas' width="200" height="230"></canvas>
         <div class='sidebox'>
-            <img class='backboxtile' src='static/colorpicker/previewalphatile.png'></img>
+            <div class='backboxtile'></div>
             <div class='previewbox'></div>
             <div class='comparebox'></div>
             <div class='inputbox'>
@@ -26,6 +27,13 @@
             <span class='label'>Alpha:</span><br />
             <input name='alpha'></input><br />
             </div>
+        </div>
+        <div class='palettebox'>
+            <div class='paletteicon'></div>
+            <div class='palettelist'>
+                
+            </div>
+        </div>
         </div>
         </div>
     </script>
