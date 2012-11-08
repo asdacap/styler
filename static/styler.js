@@ -282,15 +282,15 @@ function Styler(args){
 				}
 			}
 		
-			if (!property.name) {
-				property.name = property.css;
-			}
 			if (defaultprop) {
 				property = $.extend({}, defaultprop, property);
 			}
 			if (!property.selector | !property.css) {
 				console.log("Minimum control component is not given.")
 				return;
+			}
+			if (!property.name) {
+				property.name = property.css;
 			}
 			var selector = property.selector;
 			var name = property.name;
@@ -316,8 +316,10 @@ function Styler(args){
 				buildername = styler_meta.predefbuilders[property.css].name;
 				thebuilder = styler_meta.predefbuilders[property.css];
 			} else if (styler_meta.predefcustomcss) {
+				buildername = "predef";
 				thebuilder = undefined;
 			} else {
+				buildername = "defaultbuilder";
 				thebuilder = defaultbuilder
 			}
 
@@ -329,7 +331,12 @@ function Styler(args){
 		    	}
 			}
 			if (thebuilder) {
-				thecontainer.append(thebuilder(stylerobj,property));
+				try{
+					thecontainer.append(thebuilder(stylerobj,property));
+				}catch(e){
+					console.log("Error on builder "+buildername+" ->"+e);
+				}
+				
 			} else {
 				var newproperties=$.extend(true,{},styler_meta.predefcustomcss[property.css]);
 				newproperties.name=property.name;
@@ -350,7 +357,6 @@ function Styler(args){
 		}
 		
 		if (property.type == "group") {
-			console.log("In a group "+property.name);
 			group = $("<div class='styler_group ui-corner-all ui-widget-content'>");
 			if (property.name) {
 				group.append("<h3>" + property.name + "</h3>")
@@ -364,7 +370,6 @@ function Styler(args){
 			}
 			return group;
 		} else if (property.type == "emptygroup"){
-			console.log("In an emptygroup "+property.name);
 			group = $("<div>");
 			if (property.name) {
 				group.append("<h3>" + property.name + "</h3>")
@@ -1023,6 +1028,7 @@ function initbuilders() {
 		function thebuilder(stylerobj,prefoption) {
 			var selector=prefoption.selector;
 			var cssproperty=prefoption.css;
+			var css=cssproperty;
 			var option = {
 				min : 0,
 				max : 100,
@@ -1222,8 +1228,8 @@ function initbuilders() {
 	function checkbox(stylerobj,option) {
 		var selector=option.selector;
 		var cssproperty=option.css;
-		var checkval = options.checked;
-		var uncheckval = options.unchecked;
+		var checkval = option.checked;
+		var uncheckval = option.unchecked;
 		var theinput = $("<input type='checkbox'>");
 		$(theinput).change(function() {
 			var togive;
@@ -1246,8 +1252,8 @@ function initbuilders() {
 	}
 
 	function boxshadowbuilder(stylerobj,options) {
-		var selector=option.selector;
-		var cssprop=option.css;
+		var selector=options.selector;
+		var cssprop=options.css;
 
 		var container = $("<div class='ui-corner-all ui-widget-content' style='padding:1ex'>");
 		var shadowoverall = $('<input></input>');
