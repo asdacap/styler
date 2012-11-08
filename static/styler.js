@@ -1420,6 +1420,7 @@ function initbuilders() {
 			showColorChooser(shadowcolorinput,shadowinputid,stylerobj);
 			return false;
 		});
+		stylerobj.registerColorInput(shadowinputid,shadowcolorinput);
 
 		shadowcolorinput.change(function() {
 			shadowcolorinput.css('backgroundColor', shadowcolorinput.val());
@@ -1553,6 +1554,7 @@ function initbuilders() {
 			showColorChooser(textshadowcolorinput,textshadowinputid,stylerobj);
 			return false;
 		});
+		stylerobj.registerColorInput(textshadowinputid,textshadowcolorinput);
 
 		textshadowcolorinput.change(function() {
 			textshadowcolorinput.css('backgroundColor', textshadowcolorinput
