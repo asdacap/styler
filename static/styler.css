@@ -28,7 +28,8 @@ input.sliderpreval{
 .styler_group{
 	display:inline-block;
 	width:99%;
-	padding: 1ex;
+    padding:1ex;
+    box-sizing:border-box;
 }
 .styler_group h3{
 	margin:0;

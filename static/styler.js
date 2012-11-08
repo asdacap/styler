@@ -356,7 +356,7 @@ function Styler(args){
 			property.type = "emptygroup";
 		}
 		
-		if (property.type == "group") {
+		if (property.type == "bordergroup" ) {
 			group = $("<div class='styler_group ui-corner-all ui-widget-content'>");
 			if (property.name) {
 				group.append("<h3>" + property.name + "</h3>")
@@ -369,7 +369,7 @@ function Styler(args){
 				}
 			}
 			return group;
-		} else if (property.type == "emptygroup"){
+		} else if (property.type == "emptygroup" || property.type == "group"){
 			group = $("<div>");
 			if (property.name) {
 				group.append("<h3>" + property.name + "</h3>")
@@ -386,7 +386,7 @@ function Styler(args){
 			accordioncounter = accordioncounter + 1;
 			var counter = accordioncounter;
 			var headerclass = "accordion" + counter.toString();
-			var group = $("<div class='styler_group styler_accordian_group'>");
+			var group = $("<div class='styler_accordian_group'>");
 			var controls = property.controls;
 			var name;
 			if (property.name) {
