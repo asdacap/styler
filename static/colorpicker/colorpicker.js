@@ -492,8 +492,10 @@ function initColorChooser(){
     function hide(){
         maincontainer.slideUp(removePalette());
         $("body").unbind("click",hide);
-        maininput.unbind("change",mainInputChange);
-        maininput=false;
+        if(maininput){
+	        maininput.unbind("change",mainInputChange);
+	        maininput=false;
+        }
         inputid=undefined;
         stylerobj=undefined;
     }
@@ -531,6 +533,7 @@ function initColorChooser(){
     	for(palettename in palettecolors){
     		var palettecontainer=$("<div class='paletteitem'>");
     		var previewbox=$("<div class='paletteitembox'>");
+    		previewbox.attr("title",palettename);
     		if(palettename==currentcolor){
     			palettecontainer.toggleClass("selected");
     		}
