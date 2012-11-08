@@ -616,7 +616,7 @@ function Styler(args){
 	
 	function putColorPaletteData(thecss){
 		var palettedata={
-				colors:palette,
+				colors:palette
 		};
 		var inputdata={};
 		for(inputid in colorinputs){
