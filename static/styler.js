@@ -1466,7 +1466,7 @@ function initbuilders() {
 		var textshadowhoffsetslider = $('<div>');
 		var textshadowvoffsetslider = $('<div>');
 		var textshadowblurslider = $('<div>');
-		var container = $("<div class='ui-corner-all ui-widget-content' style='padding:1ex;'>");
+		var container = $("<div>");
 		container.append("Text-shadow color:").append(textshadowcolorinput)
 				.append(textshadowhoffsetslider)
 				.append(textshadowvoffsetslider).append(textshadowblurslider);
