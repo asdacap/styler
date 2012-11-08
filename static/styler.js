@@ -1,4 +1,12 @@
 /*
+ * Copyright 2012 Muhd Amirul Ashraf bin Mohd Fauzi <asdacap@gmail.com>
+ * You may not redistribute/reverse engineer this code or use this code 
+ * on any other website without prior written notice saying that you 
+ * may do so from me. This code is given AS IS and WITHOUT ANY WARRANTY 
+ * that it will work just fine. I am not liable for any damage caused 
+ * by this code.
+ * 
+ * 
  * Styler main function
  * Usage: 
  * var mystyle=Styler({
