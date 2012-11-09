@@ -505,9 +505,9 @@ function Styler(args){
 		buildlayout();
 		reset_all();
 		extract_properties();
-		initializeColorPalette();
 		inactive = false;
 		extractColorPalette();
+		initializeColorPalette();
 	}
 
 	function savestyle(revert) {
