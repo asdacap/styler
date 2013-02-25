@@ -504,7 +504,7 @@ function initColorChooser(){
     
     function hide(){
         maincontainer.slideUp(removePalette());
-        $("body").unbind("click",hide);
+        $(document).unbind("click",hide);
         if(maininput){
 	        maininput.unbind("change",mainInputChange);
 	        maininput=false;
@@ -597,15 +597,15 @@ function initColorChooser(){
             
             maincontainer.css("left",offx);
             maincontainer.css("top",offy);
-            maincontainer.slideDown();
-            $("body").click(hide);
             maininput=input;
+            maincontainer.slideDown();
+            $(document).click(hide);
             maininput.bind('change',mainInputChange);
             comparebox.css("background-color",maininput.val());
             parseValue(maininput.val());
         }
         
-        if(maininput==input){
+        if(maininput && maininput[0]==input[0]){
             return;
         }
         if(maininput && maininput!=input){
