@@ -1,4 +1,6 @@
 #! /usr/bin/python
+import sys
+from subprocess import call
 
 filelists=[
            "src/copying.js",
@@ -10,13 +12,23 @@ filelists=[
 target="static/styler.js"
 
 def compile():
+    cmds=["java","-jar","compiler.jar"]
+    for var in filelists:
+        cmds.append("--js="+var);
+    cmds.append("--js_output_file="+target)
+    call(cmds)
+
+def concat():
     texts=""
     for var in filelists:
-	fh=open(var)
+        fh=open(var)
         texts=texts+fh.read()
     fh=open(target,"w")
     fh.write(texts)
     fh.close()
 
 if __name__ == "__main__":
-    compile()
+    if "compile" in sys.argv:
+        compile()
+    else:
+        concat()
