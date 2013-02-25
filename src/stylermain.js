@@ -515,6 +515,88 @@ function Styler(args){
 		palettediv.empty();
 		var moddiv=$("<div>");
 		moddiv.append("<h3>Modify Color Palette</h3>")
+        var palettelist=$("<div class='palettelist'>");
+        moddiv.append(palettelist);
+		palettediv.append(moddiv);
+        repopulatePaletteList();
+        
+        var addcolordiv=$("<div class='addcolor'><span style='font-weight:bold;'>Add Color</span></div>");
+        addcolordiv.append("<div style='margin:1ex 0;'>Color name : <input name='colorname' /></div>");
+        addcolordiv.append("<button>Add</button>");
+        addcolordiv.find("button").button();
+        addcolordiv.find("button").click(function(){
+            var colorname=$(addcolordiv).find("input[name=colorname]").val();
+            if(colorname==undefined || colorname.trim()=="")return;
+            changePaletteColor(colorname,"#ffffff");
+            repopulatePaletteList();
+        });
+        palettediv.append(addcolordiv);
+
+	    palettediv.append("<h3>Select predefined Color Palette</h3>");
+        palettediv.append("<div class='palettegallery'>");
+        repopulatePaletteGallery();
+
+        var addgaldiv=$("<div class='addcolorgallery'><span style='font-weight:bold;'>Add Gallery</span></div>");
+        addgaldiv.append("<div>Theme Name: <input name='themename'/></div>");
+        addgaldiv.append("<button>Add</button>");
+        addgaldiv.find("button").button();
+        addgaldiv.find("button").click(function(){
+            var thename=$(addgaldiv).find("input[name=themename]").val();
+            if(thename==undefined || thename.trim()=="")return;
+            for(var i in palettegallery){
+                if(palettegallery[i].name==thename)return;
+            }
+            var newpalette={name:thename,colors:{}};
+            for(color in palette){
+                newpalette.colors[color]=palette[color];
+            }
+            palettegallery.push(newpalette);
+            repopulatePaletteGallery();
+        });
+
+        palettediv.append(addgaldiv);
+		
+	}
+	
+    function repopulatePaletteGallery(){
+		if(palettegallery.length!=0){
+			var galdiv=palettediv.find(".palettegallery");
+            galdiv.empty();
+			for(index in palettegallery){
+				var itemdiv=$("<div themename='"+palettegallery[index].name+"' class='palettethemeitem'>");
+                var removegal=$("<div class='removecolor'>");
+                removegal.click(function(){
+                    var themename=$(this).parent().attr("themename");
+                    var tindex=0;
+                    while(tindex<palettegallery.length){
+                        if(palettegallery[tindex].name==themename){
+                            break;
+                        }
+                        tindex++;
+                    }
+                    if(tindex==palettegallery.length){
+                        console.log("cannot find theme "+themename);
+                        return;
+                    }
+                    palettegallery.splice(tindex,1);
+                    repopulatePaletteGallery();
+                });
+                itemdiv.append(removegal);
+				for(colorname in palettegallery[index].colors){
+					itemdiv.append("<div class='colorbox' style='background-color:"+palettegallery[index].colors[colorname]+"'></div>");
+				}
+				itemdiv.append("<span class='name'>"+palettegallery[index].name+"</span>");
+				itemdiv.click(function(){
+					changePaletteTheme($(this).attr("themename"));
+				});
+				galdiv.append(itemdiv);
+			}
+		}
+    }
+
+    function repopulatePaletteList(){
+        var palettelist=palettediv.find(".palettelist");
+        palettelist.empty();
 		for(colorname in palette){
 			var citem=$("<div class='palettecoloritem'></div>");
 			var input=$("<input class='colorinput'>");
@@ -530,30 +612,19 @@ function Styler(args){
 				return false;
 			});
 			var label=$("<span>"+colorname+"</span>");
+            var remove=$("<div class='removecolor'>");
+            remove.click(function(){
+                var colorname=$(this).parent().find("input").attr("colorname");
+                delete palette[colorname];
+                repopulatePaletteList();
+            });
+            citem.append(remove);
 			citem.append(input);
 			citem.append(label);
-			moddiv.append(citem);
+			palettelist.append(citem);
 		}
-		palettediv.append(moddiv);
-		if(palettegallery.length!=0){
-			var galdiv=$("<div>");
-			galdiv.append("<h3>Select predefined Color Palette</h3>");
-			for(index in palettegallery){
-				var itemdiv=$("<div themename='"+palettegallery[index].name+"' class='palettethemeitem'>");
-				for(colorname in palettegallery[index].colors){
-					itemdiv.append("<div class='colorbox' style='background-color:"+palettegallery[index].colors[colorname]+"'></div>");
-				}
-				itemdiv.append("<span class='name'>"+palettegallery[index].name+"</span>");
-				itemdiv.click(function(){
-					changePaletteTheme($(this).attr("themename"));
-				});
-				galdiv.append(itemdiv);
-			}
-		}
-		palettediv.append(galdiv);
-		
-	}
-	
+    }
+
 	function extractColorPalette(){
 		var extractor=/\/\*\s*Color Palette\s*\n([^*]*)\n\s*\*\//mg;
 		var match=extractor.exec(oldstyle);
@@ -567,6 +638,7 @@ function Styler(args){
 				return;
 			}
 			palette=palettedata.colors;
+            $.extend(true,palettegallery,palettedata.palettegallery);
 			var colorinputscss=palettedata.inputs;
 			for(inputid in colorinputscss){
 				var colorname=colorinputscss[inputid];
@@ -581,10 +653,11 @@ function Styler(args){
 			}
 		}
 	}
-	
+
 	function putColorPaletteData(thecss){
 		var palettedata={
-				colors:palette
+				colors:palette,
+                palettegallery:palettegallery
 		};
 		var inputdata={};
 		for(inputid in colorinputs){
@@ -595,14 +668,13 @@ function Styler(args){
 		palettedata.inputs=inputdata;
 		
 		var css=thecss;
-		console.log(palettedata);
 		palettedata=JSON.stringify(palettedata,null,4);
 		palettedata="/* Color Palette \n"+palettedata+"\n*/";
 		
 		var extractor=/\/\*\s*Color Palette\s*\n([^*]*)\n\s*\*\//mg;
 		var match=extractor.exec(thecss);
 		if(match){
-			css.replace(extractor,palettedata);
+			css=css.replace(extractor,palettedata);
 		}else{
 			css=css+"\n"+palettedata;
 		}
@@ -619,6 +691,7 @@ function Styler(args){
 		for(colorname in theme){
 			changePaletteColor(colorname,theme[colorname]);
 		}
+        repopulatePaletteList();
 	}
 	
 	function changePaletteColor(colorname,value){
