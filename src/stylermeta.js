@@ -148,13 +148,13 @@ function initbuilders() {
 				}
 				if (numberlist.length == 1) {
 					singleslider.StylerSlider("string", numberlist[0]);
-					container.tabs('select', 0);
+					container.tabs('option','active', 0);
 					return;
 				}
 				if (numberlist.length == 2) {
 					verticalslider.StylerSlider("string", numberlist[0]);
 					horizontalslider.StylerSlider("string", numberlist[1]);
-					container.tabs('select', 1);
+					container.tabs('option','active', 1);
 					return;
 				}
 				if (numberlist.length == 4) {
@@ -162,7 +162,7 @@ function initbuilders() {
 					rightslider.StylerSlider("string", numberlist[1]);
 					bottomslider.StylerSlider("string", numberlist[2]);
 					leftslider.StylerSlider("string", numberlist[3]);
-					container.tabs('select', 2);
+					container.tabs('option','active', 2);
 					return;
 				}
 			}

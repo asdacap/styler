@@ -183,7 +183,7 @@
 	margin-top: -8px;
 }
 .ui-accordion .ui-accordion-content {
-	padding: 1em 2.2em;
+	padding: 1em 0.8em;
 	border-top: 0;
 	overflow: auto;
 }
@@ -766,7 +766,7 @@ button.ui-button::-moz-focus-inner {
 .ui-tabs .ui-tabs-panel {
 	display: block;
 	border-width: 0;
-	padding: 1em 1.4em;
+	padding: 1em 0.8em;
 	background: none;
 }
 .ui-tooltip {

@@ -383,7 +383,8 @@ function Styler(args){
 			group.append(content);
 			$(group).accordion({
 				active : false,
-				autoHeight : false,
+				autoHeight : true,
+				heightStyle: "content",
 				header : "h3." + headerclass,
 				collapsible : true
 			});
