@@ -223,6 +223,8 @@ function Styler(args){
 	});
 
 	function extract_properties() {
+        var ichangeinactive=true;
+        if(inactive)ichangeinactive=false;
 		inactive = true;
 		// first exclude the comment.
 		var commentfinder = /\/\*[\s\S]*?\*\//mg;
@@ -244,7 +246,7 @@ function Styler(args){
 			}
 
 		}
-
+        if(ichangeinactive)
 		inactive = false;
 	}
 
@@ -473,9 +475,9 @@ function Styler(args){
 		buildlayout();
 		reset_all();
 		extract_properties();
-		inactive = false;
 		extractColorPalette();
 		initializeColorPalette();
+		inactive = false;
 	}
 
 	function savestyle(revert) {
@@ -627,7 +629,6 @@ function Styler(args){
 		var extractor=/\/\*\s*Color Palette\s*\n([^*]*)\n\s*\*\//mg;
 		var match=extractor.exec(oldstyle);
 		if(match){
-			console.log("Palette data detected");
 			var palettedata=match[1];
 			try {
 				palettedata= JSON.parse(palettedata);
