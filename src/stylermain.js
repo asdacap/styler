@@ -559,39 +559,37 @@ function Styler(args){
 	}
 	
     function repopulatePaletteGallery(){
-		if(palettegallery.length!=0){
-			var galdiv=palettediv.find(".palettegallery");
-            galdiv.empty();
-			for(index in palettegallery){
-				var itemdiv=$("<div themename='"+palettegallery[index].name+"' class='palettethemeitem'>");
-                var removegal=$("<div class='removecolor'>");
-                removegal.click(function(){
-                    var themename=$(this).parent().attr("themename");
-                    var tindex=0;
-                    while(tindex<palettegallery.length){
-                        if(palettegallery[tindex].name==themename){
-                            break;
-                        }
-                        tindex++;
+        var galdiv=palettediv.find(".palettegallery");
+        galdiv.empty();
+        for(index in palettegallery){
+            var itemdiv=$("<div themename='"+palettegallery[index].name+"' class='palettethemeitem'>");
+            var removegal=$("<div class='removecolor'>");
+            removegal.click(function(){
+                var themename=$(this).parent().attr("themename");
+                var tindex=0;
+                while(tindex<palettegallery.length){
+                    if(palettegallery[tindex].name==themename){
+                        break;
                     }
-                    if(tindex==palettegallery.length){
-                        console.log("cannot find theme "+themename);
-                        return;
-                    }
+                    tindex++;
+                }
+                if(tindex==palettegallery.length){
+                    console.log("cannot find theme "+themename);
+                }else{
                     palettegallery.splice(tindex,1);
-                    repopulatePaletteGallery();
-                });
-                itemdiv.append(removegal);
-				for(colorname in palettegallery[index].colors){
-					itemdiv.append("<div class='colorbox' style='background-color:"+palettegallery[index].colors[colorname]+"'></div>");
-				}
-				itemdiv.append("<span class='name'>"+palettegallery[index].name+"</span>");
-				itemdiv.click(function(){
-					changePaletteTheme($(this).attr("themename"));
-				});
-				galdiv.append(itemdiv);
-			}
-		}
+                }
+                repopulatePaletteGallery();
+            });
+            itemdiv.append(removegal);
+            for(colorname in palettegallery[index].colors){
+                itemdiv.append("<div class='colorbox' style='background-color:"+palettegallery[index].colors[colorname]+"'></div>");
+            }
+            itemdiv.append("<span class='name'>"+palettegallery[index].name+"</span>");
+            itemdiv.click(function(){
+                changePaletteTheme($(this).attr("themename"));
+            });
+            galdiv.append(itemdiv);
+        }
     }
 
     function repopulatePaletteList(){
