@@ -538,7 +538,7 @@ function Styler(args){
         palettediv.append("<div class='palettegallery'>");
         repopulatePaletteGallery();
 
-        var addgaldiv=$("<div class='addcolorgallery'><span style='font-weight:bold;'>Add Gallery</span></div>");
+        var addgaldiv=$("<div class='addcolorgallery'><span style='font-weight:bold;'>Add Color Palette</span></div>");
         addgaldiv.append("<div>Theme Name: <input name='themename'/></div>");
         addgaldiv.append("<button>Add</button>");
         addgaldiv.find("button").button();
