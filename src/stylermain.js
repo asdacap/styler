@@ -437,7 +437,7 @@ function Styler(args){
 		}
 		
 		//-------------------color--------------------------------
-		tabmenu.append("<li><a href='#stylercolortab' class='stylercolortab'>Color</a></li>");
+		tabmenu.prepend("<li><a href='#stylercolortab' class='stylercolortab'>Color</a></li>");
 		colortab=$("<div id='stylercolortab'>");
 		colortab.append(palettediv);
 		tempdiv.append(colortab);
