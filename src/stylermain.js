@@ -393,9 +393,10 @@ function Styler(args){
 			return group;
 		}
 	}
-	
+    
 	function buildlayout() {
 		var tempdiv = $("<div>");
+		mainbody.html( tempdiv );
 		var tabmenu = $("<ul>");
 		var executed=false;
 		var uid=0;
@@ -406,8 +407,8 @@ function Styler(args){
 				var newid = "tab-" + page.replace(/\s/g, "_");
 				newid=newid+"uid"+uid.toString();
 				var thediv = $("<div id='" + newid + "'></div>");
-				tabmenu.append("<li><a href='#" + newid + "'>" + page + "</a></li>");
 				var properties = layout[page];
+				tabmenu.append("<li><a href='#" + newid + "'>" + page + "</a></li>");
 				thediv.append(buildgroup(properties));
 				tempdiv.append(thediv);
 			}
@@ -444,7 +445,6 @@ function Styler(args){
 		
 		tempdiv.prepend(tabmenu);
 		$(tempdiv).tabs();
-		mainbody.html( tempdiv );
 	}
 
 	function reset_all() {
