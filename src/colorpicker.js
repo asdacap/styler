@@ -45,10 +45,6 @@ function roundNumber(num, dec) {
     return result;
 }
 
-if(window.staticpath==undefined){
-	window.staticpath="/static/colorpicker/";
-}
-
 function initColorChooser(){
     
 	if(!$("#colorchooser").length){
@@ -61,11 +57,11 @@ function initColorChooser(){
     var previewbox=maincontainer.find('.previewbox');
     var comparebox=maincontainer.find('.comparebox');
     var huecircle=new Image();
-    huecircle.src=staticpath+'huecircle.png';
+    huecircle.src=colorpickerstaticpath+'huecircle.png';
     var backtile=new Image();
-    backtile.src=staticpath+'backtile.png';
+    backtile.src=colorpickerstaticpath+'backtile.png';
     var alphatile=new Image();
-    alphatile.src=staticpath+'alphatile.png';
+    alphatile.src=colorpickerstaticpath+'alphatile.png';
     
     var huebuffer=document.createElement("canvas");
     huebuffer.width=100;
@@ -617,4 +613,10 @@ function initColorChooser(){
     
 }
 
-initColorChooser();
+
+$(document).ready(function(){
+    if(window.colorpickerstaticpath==undefined){
+        window.colorpickerstaticpath="/static/colorpicker/";
+    }
+    initColorChooser();
+});
